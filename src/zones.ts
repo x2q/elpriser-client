@@ -3,9 +3,10 @@
  *
  * The table mirrors the `zone` enum of https://elpriser.org/api/openapi.json (40
  * zones, checked against it in the tests). `timeZone` is the IANA time zone of the
- * wall clock the API's `hour` field (0-23) is expressed in: the 13 Nordic/NL feed
- * zones are all on Copenhagen time (Finland too: the feed floors every slot to the
- * Copenhagen hour), every other zone is on its own country's clock.
+ * wall clock the API's `hour` field (0-23) is expressed in: Copenhagen's for DK, NO, SE
+ * and NL, Helsinki's for Finland (elpriser.org cuts `fi` into Helsinki days; until then
+ * the feed floored it to the Copenhagen hour, which 1.1.0 assumed), every other zone is
+ * on its own country's clock.
  */
 
 import { UnknownZoneError } from './errors.js';
@@ -44,7 +45,7 @@ export const ZONES = {
   'se2': { label: 'SE2 Sundsvall', country: 'SE', currency: 'SEK', timeZone: 'Europe/Copenhagen', group: 'nordic', area: null },
   'se3': { label: 'SE3 Stockholm', country: 'SE', currency: 'SEK', timeZone: 'Europe/Copenhagen', group: 'nordic', area: null },
   'se4': { label: 'SE4 Malmö', country: 'SE', currency: 'SEK', timeZone: 'Europe/Copenhagen', group: 'nordic', area: null },
-  'fi': { label: 'FI Finland', country: 'FI', currency: 'EUR', timeZone: 'Europe/Copenhagen', group: 'nordic', area: null },
+  'fi': { label: 'FI Finland', country: 'FI', currency: 'EUR', timeZone: 'Europe/Helsinki', group: 'nordic', area: null },
   'nl': { label: 'NL Nederland', country: 'NL', currency: 'EUR', timeZone: 'Europe/Copenhagen', group: 'nordic', area: null },
   'de': { label: 'DE-LU Germany and Luxembourg', country: 'DE', currency: 'EUR', timeZone: 'Europe/Berlin', group: 'eu', area: null },
   'fr': { label: 'FR France', country: 'FR', currency: 'EUR', timeZone: 'Europe/Paris', group: 'eu', area: null },

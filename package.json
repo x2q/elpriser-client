@@ -1,6 +1,6 @@
 {
   "name": "elpriser-client",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Typed TypeScript/JavaScript SDK for the elpriser.org electricity price API: 40 European zones, current and next hour, cheapest hours, best window, forecast, Danish tariff-aware prices. No dependencies.",
   "type": "module",
   "main": "./dist/cjs/index.js",

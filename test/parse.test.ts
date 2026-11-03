@@ -277,3 +277,35 @@ test('parseTimestamp never uses the host time zone for offset-less input', () =>
   assert.equal(parseTimestamp(5), null);
   assert.equal(parseTimestamp(''), null);
 });
+
+test('Finland is on Helsinki time: hour 0 of a Finnish day is 22:00Z in winter (ENTSO-E: the 2026-11-03 market day starts at 23:00Z = hour 1)', () => {
+  const day = (date: string) => ({
+    date,
+    type: 'actual',
+    prices: Array.from({ length: 24 }, (_, h) => ({ hour: h, eur_mwh: h === 1 ? 5.77 : h })),
+  });
+  const feed = (...dates: string[]) => ({
+    zone: 'fi',
+    generated: '2026-11-03',
+    trainedThrough: null,
+    unit: 'EUR/MWh',
+    zoneInfo: { name: 'FI Finland', country: 'FI', currency: 'EUR', rate: 1, rateDate: '2026-11-03', rateSource: 'ECB' },
+    days: dates.map(day),
+  });
+  const slots = must(parseZoneFeed(feed('2026-11-03'), 'fi').day('2026-11-03')).slots;
+  assert.equal(slots[0]!.start.toISOString(), '2026-11-02T22:00:00.000Z');
+  assert.equal(slots[1]!.start.toISOString(), '2026-11-02T23:00:00.000Z');
+  assert.equal(slots[1]!.priceMwh, 5.77);
+  assert.equal(slots[1]!.localStart, '2026-11-03T01:00:00+02:00');
+  assert.equal(slots[23]!.start.toISOString(), '2026-11-03T21:00:00.000Z');
+  // the clock-change days: 23 hours (no 03:00) and 25 hours (03:00 twice, one value for both)
+  const spring = must(parseZoneFeed(feed('2026-03-29'), 'fi').day('2026-03-29')).slots;
+  assert.equal(spring.length, 23);
+  assert.equal(spring[0]!.start.toISOString(), '2026-03-28T22:00:00.000Z');
+  assert.equal(spring[3]!.start.toISOString(), '2026-03-29T01:00:00.000Z'); // 04:00 EEST
+  const fall = must(parseZoneFeed(feed('2026-10-25'), 'fi').day('2026-10-25')).slots;
+  assert.equal(fall.length, 25);
+  assert.equal(fall[0]!.start.toISOString(), '2026-10-24T21:00:00.000Z');
+  assert.deepEqual([fall[3]!.start.toISOString(), fall[4]!.start.toISOString()], ['2026-10-25T00:00:00.000Z', '2026-10-25T01:00:00.000Z']);
+  assert.deepEqual([fall[3]!.priceMwh, fall[4]!.priceMwh], [3, 3]);
+});

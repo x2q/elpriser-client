@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.1
+
+### Fixed
+
+- `ZONES.fi.timeZone` is `Europe/Helsinki`: elpriser.org now serves `/api/nordic?zone=fi` in Helsinki days (it was indexed by the Copenhagen hour), so hour 0
+  of a Finnish day is 22:00 UTC in winter. 1.1.0 assumed Copenhagen time for `fi` and is one hour off once the API has changed; 1.1.1 is one hour off against
+  the old API. Publish it together with the API change.
+
 ## 1.1.0
 
 A full TypeScript SDK; additive, the 1.0.0 API is unchanged.

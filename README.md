@@ -135,7 +135,7 @@ the machine the code runs on.
 - `slot.hour`, `slot.localDate` (`'2026-11-03'`), `slot.localStart` / `slot.localEnd` (`'2026-11-03T08:00:00+01:00'`) are the zone's wall clock.
 - A "local date" argument or result (`day: '2026-11-04'`, `series.today()`) is a `YYYY-MM-DD` string; there is no local `Date` type.
 - A 25-hour day has 25 slots (local hour 2 appears twice, with offsets `+02:00` and `+01:00`), a 23-hour day has 23.
-- The 13 Nordic/NL feed zones (also Finland) are on Copenhagen time; every other zone is on its own country's clock.
+- Denmark, Norway, Sweden and the Netherlands are on Copenhagen time, Finland on Helsinki time (elpriser.org serves `fi` in Helsinki days; 1.1.0 and older assumed Copenhagen time for it); every other zone is on its own country's clock.
 
 ### Settled, forecast, estimate
 

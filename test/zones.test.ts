@@ -35,13 +35,13 @@ test('currencies other than euro', () => {
   });
 });
 
-test('time zones: Nordic and NL feed zones are on Copenhagen time, the others on their own clock', () => {
-  for (const k of ZONE_KEYS.filter((k) => ZONES[k].group !== 'eu')) assert.equal(ZONES[k].timeZone, 'Europe/Copenhagen', k);
+test('time zones: Nordic and NL zones are on Copenhagen time except Finland (Helsinki), the others on their own clock', () => {
+  for (const k of ZONE_KEYS.filter((k) => ZONES[k].group !== 'eu' && k !== 'fi')) assert.equal(ZONES[k].timeZone, 'Europe/Copenhagen', k);
   assert.equal(ZONES.de.timeZone, 'Europe/Berlin');
   assert.equal(ZONES.gb.timeZone, 'Europe/London');
   assert.equal(ZONES.pt.timeZone, 'Europe/Lisbon');
   assert.equal(ZONES.xk.timeZone, 'Europe/Belgrade');
-  assert.equal(ZONES.fi.timeZone, 'Europe/Copenhagen');
+  assert.equal(ZONES.fi.timeZone, 'Europe/Helsinki');
 });
 
 test('Danish zones', () => {
