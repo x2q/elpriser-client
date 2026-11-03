@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "node16",
+    "moduleResolution": "node16",
+    "rootDir": "build-cjs",
+    "outDir": "dist/cjs"
+  },
+  "include": ["build-cjs"]
+}
