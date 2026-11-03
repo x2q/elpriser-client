@@ -1,38 +1,61 @@
 {
   "name": "elpriser-client",
-  "version": "1.0.0",
-  "description": "Tiny, zero-dependency, typed JS/TS client for the elpriser.org API — Danish electricity prices (DK1/DK2): current price, cheapest hours, 7-day forecast.",
+  "version": "1.1.0",
+  "description": "Typed TypeScript/JavaScript SDK for the elpriser.org electricity price API: 40 European zones, current and next hour, cheapest hours, best window, forecast, Danish tariff-aware prices. No dependencies.",
   "type": "module",
-  "main": "index.js",
-  "module": "index.js",
-  "types": "index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "default": "./index.js"
-    }
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    },
+    "./package.json": "./package.json"
   },
   "files": [
-    "index.js",
-    "index.d.ts"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "sideEffects": false,
   "scripts": {
-    "test": "node test.js"
+    "clean": "node scripts/build.mjs --clean",
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node scripts/test.mjs",
+    "test:types": "tsc -p tsconfig.types.json && tsc -p tsconfig.types-dom.json",
+    "test:dist": "node --test test/dist/smoke.test.mjs test/dist/smoke.test.cjs",
+    "check": "npm run typecheck && npm run build && npm test && npm run test:types && npm run test:dist",
+    "prepack": "npm run build"
   },
   "engines": {
     "node": ">=18"
   },
+  "devDependencies": {
+    "@types/node": "^18.19.0",
+    "typescript": "~5.9.3"
+  },
   "keywords": [
     "elpriser",
     "electricity-prices",
+    "electricity",
+    "spot-price",
     "spotpris",
+    "nordpool",
     "denmark",
     "dk1",
     "dk2",
     "energidataservice",
-    "nordpool",
     "api-client",
+    "sdk",
+    "typescript",
     "energy"
   ],
   "homepage": "https://elpriser.org",

@@ -1,0 +1,60 @@
+# Publishes to npm when a v* tag is pushed, using npm trusted publishing (OIDC): no token is stored
+# in GitHub and provenance is attached. It stays INERT until the maintainer switches it on:
+#
+#   1. npmjs.com -> package "elpriser-client" -> Settings -> Trusted publisher -> GitHub Actions:
+#        owner x2q, repository elpriser-client, workflow publish.yml, environment npm.
+#   2. GitHub -> Settings -> Secrets and variables -> Actions -> Variables: NPM_PUBLISH = true.
+#
+# Until then the `publish` job is skipped; `verify` still builds and tests the tagged commit.
+name: Publish
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: The tag must equal the package version
+        run: |
+          version="v$(node -p "require('./package.json').version")"
+          if [ "$GITHUB_REF_NAME" != "$version" ]; then
+            echo "tag $GITHUB_REF_NAME does not match package.json version $version"
+            exit 1
+          fi
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm test
+      - run: npm run test:types
+      - run: npm run test:dist
+      - run: node scripts/check-pack.mjs
+
+  publish:
+    needs: verify
+    if: ${{ vars.NPM_PUBLISH == 'true' }}
+    runs-on: ubuntu-24.04
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write # npm trusted publishing + provenance
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: Trusted publishing needs npm >= 11.5.1
+        run: npm install -g npm@^11.5.1 && npm --version
+      - run: npm ci
+      - run: npm run build
+      - run: npm publish --provenance --access public
