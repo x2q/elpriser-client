@@ -1,7 +1,7 @@
 node_modules/
 *.log
 .DS_Store
-dist/
-build-test/
-build-cjs/
+/dist/
+/build-test/
+/build-cjs/
 *.tgz
